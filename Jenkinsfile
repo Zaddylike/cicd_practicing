@@ -8,8 +8,10 @@ pipeline {
             }
         }
 
-        stage('Check Python') {
+        stage('Check Environment') {
             steps {
+                bat 'cd'
+                bat 'dir'
                 bat 'python --version'
                 bat 'pip --version'
             }
@@ -18,14 +20,14 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat 'python -m pip install --upgrade pip'
-                bat 'pip install -r requirements.txt'
+                bat 'python -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
                 bat 'if not exist reports mkdir reports'
-                bat 'pytest tests --junitxml=reports\\junit.xml'
+                bat 'python -m pytest tests --junitxml=reports\\junit.xml'
             }
         }
     }
