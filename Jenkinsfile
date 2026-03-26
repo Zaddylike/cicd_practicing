@@ -17,22 +17,28 @@ pipeline {
                 sh 'echo "===== PYTHON ====="'
                 sh 'which python3 || true'
                 sh 'python3 --version'
-                sh 'echo "===== PIP ====="'
-                sh 'python3 -m pip --version'
+                sh 'echo "===== VENV MODULE ====="'
+                sh 'python3 -m venv --help >/dev/null'
             }
         }
-
+        stage('Create Virtual Environment') {
+            steps {
+                sh 'python3 -m venv .venv'
+                sh '.venv/bin/python --version'
+                sh '.venv/bin/pip --version'
+            }
+        }
         stage('Install Dependencies') {
             steps {
-                sh 'python3 -m pip install --upgrade pip'
-                sh 'python3 -m pip install -r requirements.txt'
+                sh '.venv/bin/python3 -m pip install --upgrade pip'
+                sh '.venv/bin/python3 -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
                 sh 'mkdir -p reports'
-                sh 'python3 -m pytest tests --junitxml=reports/junit.xml'
+                sh '.venv/bin/python3 -m pytest tests --junitxml=reports/junit.xml'
                 sh 'ls -la reports'
             }
         }
