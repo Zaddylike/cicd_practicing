@@ -38,7 +38,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh 'mkdir -p reports'
-                sh '.venv/bin/python3 -m pytest tests --junitxml=reports/junit.xml'
+                sh '.venv/bin/python3 -m pytest tests --junitxml=reports/junit.xml --html=reports/report.html --self-contained-html'
                 sh 'ls -la reports'
             }
         }
@@ -48,6 +48,15 @@ pipeline {
         always {
             archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
             junit testResults: 'reports/junit.xml', allowEmptyResults: true
+
+            publishHTML(target: [
+                allowMissing: true,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'reports',
+                reportFiles: 'report.html',
+                reportName: 'Pytest HTML Report'
+            ])
         }
     }
 }
