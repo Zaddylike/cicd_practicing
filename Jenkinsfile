@@ -32,6 +32,7 @@ pipeline {
             steps {
                 sh '.venv/bin/python3 -m pip install --upgrade pip'
                 sh '.venv/bin/python3 -m pip install -r requirements.txt'
+                sh '.venv/bin/python3 -m pip list'
             }
         }
 
@@ -46,7 +47,7 @@ pipeline {
 
     post {
         always {
-            archiveArtifacts artifacts: 'reports/**/*', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
             junit testResults: 'reports/junit.xml', allowEmptyResults: true
 
             publishHTML(target: [
